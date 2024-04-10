@@ -10,4 +10,4 @@ and their work with implementation activities in:
 
 1. ODA CA
 2. Innovation Hub
-3. and Memeber development
+3. Member development
