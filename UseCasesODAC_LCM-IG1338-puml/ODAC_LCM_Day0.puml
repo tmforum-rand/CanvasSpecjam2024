@@ -1,0 +1,34 @@
+@startuml Day 0 ODA Component Lifecycle Management Services 
+Title Day 0 ODA Component Design Service
+actor "ODA Operations Manager" as ODA_OPS
+actor BusinessAdmin
+Database "Vendor ODAC Resource Specification Catalog" as VendorSpecStore
+
+
+'box ODAC_ManagedComponent  #Plum
+'participant "ODAC Configuration Supporting Functions"
+'endbox
+
+Box ODA Canvas   #Plum
+participant "ODACanvas_Catalog" as ODACanvas_Catalog 
+'participant "ODACanvas_Inventory as ODACanvas_Inventory #LightBlue
+'participant "ODACanvas_ResourceOrder" as ODACanvas_ResourceOrder #LightBlue
+'participant "ODACanvas_ResourceActivation" as ODACanvas_ResourceActivation #LightBlue
+'participant "ODACanvas_Discovery"  #LightBlue"""
+endbox
+
+'Day O ODA Component Design Service
+group#gold "Day 0: Component Lifecycle Service::ODA Component Design Service "
+group#lightgrey "Import Vendor Specification Feature"    
+ODA_OPS -> ODACanvas_Catalog : Import_VendorSpecification_ Request {Create_importJob_Request}
+ODACanvas_Catalog -> VendorSpecStore: Retrieve_ResourceSpecification_Request 
+VendorSpecStore  -> ODACanvas_Catalog: Retrieve_ResourceSpecification_Response 
+ODACanvas_Catalog ->  ODA_OPS :Import_VendorSpecification_ Response {Create_importJob_Response}
+end
+group#lightgrey "Create operator ODAC extensions & constraints Feature"
+ODA_OPS -> ODACanvas_Catalog : Update_ResourceSpecification_Request
+ODACanvas_Catalog -> ODA_OPS : Update_ResourceSpecification_Response
+end
+end
+
+@enduml

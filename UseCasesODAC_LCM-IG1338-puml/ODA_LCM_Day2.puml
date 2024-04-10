@@ -1,0 +1,49 @@
+@startuml Day 1 /2 ODA Component Lifecycle management Services 
+Title Day 2  ODA Component Lifecycle Management Services:: Activation and Configuration Services
+' Instantiating functions and configuration changes in active Component
+
+actor "ODA Operations Manager" as ODA_OPS
+
+
+Box ODA Canvas   #Plum
+participant "ODACanvas_Catalog" as ODACanvas_Catalog 
+participant "ODACanvas_Inventory" as ODACanvas_Inventory #LightBlue
+participant "ODACanvas_ResourceOrder" as ODACanvas_ResourceOrder #LightBlue
+participant "ODACanvas_ResourceActivation" as ODACanvas_ResourceActivation #LightBlue
+endbox
+
+box ODACanvas_ManagedComponent  #Plum
+participant "ODAC Configuration Supporting Functions" as  ODACanvas_Component 
+endbox
+
+'Day 2  ODAC Lifecycle Management Service::Activate and Configure Service
+group #Gold #LightBlue "ODAC Lifecycle Management Services::ctivate and Configure Service
+group #lightgrey "Activate and Configuation Service"
+
+
+ODA_OPS -> ODACanvas_ResourceOrder : Create_ResourceOrder_Request
+
+
+group #lightgrey "Read Specification from Catalog Feature"
+ODACanvas_ResourceOrder -> ODACanvas_Catalog : Retrieve_ResourceSpecification_Request
+ODACanvas_Catalog -> ODACanvas_ResourceOrder: Retrieve_ResourceSpecification_Response TMF634
+end
+
+group #lightgrey "Activate new Function within, or configuraton changes to active Compoentinstance Feature"
+ODACanvas_ResourceOrder -> ODACanvas_ResourceActivation : Create_ResourceOrder_Request
+ODACanvas_ResourceActivation -> ODACanvas_Component : Modify_ODAComponent_Request
+ODACanvas_Component -> ODACanvas_ResourceActivation : Modify_ODAComponent_Response
+ODACanvas_ResourceActivation -> ODACanvas_ResourceOrder : Create_ResourceOrder_Response
+end
+
+group #lightgrey "Record deployed managed entities in Inventory Feature"
+ODACanvas_ResourceOrder  -> ODACanvas_Inventory : Create_Resource_Request 
+ODACanvas_Inventory ->  ODACanvas_ResourceOrder : Create_Resource_Response
+end
+
+ODACanvas_ResourceOrder -> ODA_OPS : Create_ResourceOrder_Response
+
+end
+end
+
+@enduml

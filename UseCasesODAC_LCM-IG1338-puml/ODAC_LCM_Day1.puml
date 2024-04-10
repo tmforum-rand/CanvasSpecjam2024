@@ -1,0 +1,48 @@
+@startuml Day 1 /2 ODA Component Lifecycle Management Services 
+Title Day 1  ODAC - Instantiation and parameterization Service
+' Instantiating an ODA Component from a Specification
+
+actor "ODA Operations Manager" as ODA_OPS
+
+
+Box ODA Canvas   #Plum
+participant "ODACanvas_Catalog" as ODACanvas_Catalog
+participant "ODACanvas_Inventory-" as ODACanvas_Inventory #LightBlue
+participant "ODACanvas_ResourceOrder" as ODACanvas_ResourceOrder #LightBlue
+participant "ODACanvas_ResourceActivation" as ODACanvas_ResourceActivation #LightBlue
+endbox
+
+box ODACanvas_ManagedComponent  #Plum
+participant "ODACanvas Configuration Supporting Functions" as  ODACanvas_Component 
+endbox
+
+'Day 1 ODA ComponentLifecycleService::Instantiation and parameterization Service
+group #Gold  "Day 1 Instantiation and parameterization Service"
+  group #lightgrey "ODA Component Lifecycle Management Services::Install ComponentFeature"
+
+
+    ODA_OPS -> ODACanvas_ResourceOrder : Create_ResourceOrder_Request
+
+
+    group #lightgrey "Read Specification from Catalog Step"
+    ODACanvas_ResourceOrder -> ODACanvas_Catalog : Retrieve_ResourceSpecification_Request
+    ODACanvas_Catalog -> ODACanvas_ResourceOrder:  Retrieve_ResourceSpecification_Response
+    end
+
+    group #lightgrey "Activate new component instance Step"
+    ODACanvas_ResourceOrder -> ODACanvas_ResourceActivation : Create_ResourceOrder_Response
+    ODACanvas_ResourceActivation -> ODACanvas_Component : Create_ResourceFunction_Request
+    ODACanvas_Component -> ODACanvas_ResourceActivation : Create_ResourceFunction_Response
+    ODACanvas_ResourceActivation -> ODACanvas_ResourceOrder : CreateResource_Order_Response
+    end
+
+    group #lightgrey "Record deployed managed entities in Inventory Step"
+    ODACanvas_ResourceActivation  -> ODACanvas_Inventory : Create_Resource_Request TMF639
+    ODACanvas_Inventory ->  ODACanvas_ResourceActivation : Create_Resource_Response TMF639
+    end
+
+    ODACanvas_ResourceActivation -> ODA_OPS : Create_ResourceOrder_Response 
+
+  end
+end
+@enduml
